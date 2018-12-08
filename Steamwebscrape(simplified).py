@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import pandas as pd
 from bs4 import BeautifulSoup
+
 #To do: Generalize Infograbing
 #Fix reviews
 #Fix bundle reading
@@ -200,13 +201,16 @@ def getFrontPageGames(tab_id):
     #print(discount_percent)
    
     #print(top_sellers.prettify())
-    
-    
+def writetoCSV(game_dict, filename = "game_data.csv"):
+    #Writes the gathered data to a 
+    df = pd.DataFrame(game_dict)
+    df.to_csv(filename)
 def main():
 #   tab_info = getFrontPageGames(tabs["specials"][0])
 #   printTabInfo(tab_info)
     Specials = getAllGames("topselling")
-    printTabInfo(Specials)
+    writetoCSV(Specials)
+   
     
    
 
