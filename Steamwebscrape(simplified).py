@@ -1,10 +1,8 @@
 import requests
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import pandas as pd
 from bs4 import BeautifulSoup
 
-#To do: Generalize Infograbing
+
 #Fix reviews
 #Fix bundle reading
 #Implement Error handling
@@ -186,8 +184,9 @@ def getFrontPageInfo(item):
 def getFrontPageGames(tab_id):
     #Iterates through a given steam tab and extracts information about the games
     info_dict = dict()
+    tab_page = tabs[tab_id][0]
     
-    info = soup.find(id = tab_id)
+    info = soup.find(id = tab_page)
     container_list = info.find_all(class_ = "tab_item")
     
     for item in container_list:
@@ -196,11 +195,7 @@ def getFrontPageGames(tab_id):
         info_dict[game_name] = info_tup
     
     return info_dict
-    
-    #discount_percent = top_sellers.find_all(class_= "discount_pct")
-    #print(discount_percent)
-   
-    #print(top_sellers.prettify())
+
 def writetoCSV(game_dict, filename = "game_data.csv"):
     #Writes the gathered data to a 
     df = pd.DataFrame(game_dict)
@@ -208,8 +203,8 @@ def writetoCSV(game_dict, filename = "game_data.csv"):
 def main():
 #   tab_info = getFrontPageGames(tabs["specials"][0])
 #   printTabInfo(tab_info)
-    Specials = getAllGames("topselling")
-    writetoCSV(Specials)
+    Specials = getFrontPageGames("specials")
+    printTabInfo(Specials)
    
     
    
