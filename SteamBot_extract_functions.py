@@ -35,20 +35,27 @@ def getFrontPageInfo(item):
                 
         info_tup = (bundle_status, game_price, game_discount, game_tags_proc, URL)
         return info_tup
+def fixGameReviews(game_review_string):
+    for (i, ch) in enumerate(game_review_string):
+        if(ch == "<"):
+            return game_review_string[:i]
     
 def getAllGamesInfo(game_container):
     #Returns tuple of information 
     #(Bundle status, price, discount percent, tags, URL)
     #Game reviews currently broken
-    
     game_date = game_container.find(class_ = "search_released")
     if game_date is None:
         game_date = "Not yet released"
     else:
         game_date = game_date.get_text()
         
-    #game_reviews = game_container.find(class_ = "search_review_summary")
-    game_reviews = "Not yet implemented"
+    game_reviews = game_container.find(class_ = "search_review_summary")
+    if game_reviews is None:
+        game_reviews = "Currently No Reviews"
+    else:
+        game_reviews = fixGameReviews(game_reviews["data-tooltip-html"])
+
     game_discount = game_container.find(class_ = "search_discount")
 
     #Checks to see if game is discounted or not

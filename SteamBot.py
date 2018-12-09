@@ -59,6 +59,7 @@ class SteamBot(Bot):
                     game_dict[game_name] = game_tuple
                     
                     
+                    
                 page_number += 1
                 
             else:
