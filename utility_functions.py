@@ -40,7 +40,7 @@ def fixGameReviews(game_review_string):
         if(ch == "<"):
             return game_review_string[:i]
     
-def getAllGamesInfo(game_container):
+def getGamesInfo(game_container):
     #Returns tuple of information 
     #(Bundle status, price, discount percent, tags, URL)
     #Game reviews currently broken
@@ -85,3 +85,17 @@ def getAllGamesInfo(game_container):
     
     
     return (game_bundle, game_price, game_discount, game_reviews, game_date, URL)
+
+def getValidName(string):
+    string = string.lower()
+    if "top" in string:
+        return "topselling"
+    elif "new" in string or "trending" in string:
+        return "newandtrending"
+    elif "unreleased" in string or "upcoming" in string:
+        return "popularupcoming"
+    elif "sale" in string or "deal" in string:
+        return "specials"
+    
+    return "error"
+    
