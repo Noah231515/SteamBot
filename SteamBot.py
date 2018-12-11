@@ -22,8 +22,7 @@ class SteamBot(Bot):
         self.soup = BeautifulSoup(self.page.content, "html.parser")
         
     def getFrontPageGames(self, tab_name):
-        #Iterates through a given steam tab and extracts information about the games
-        #Should I store the tab_name in the tuple as well?
+        
         info_dict = dict()
         tab_name = uf.getValidName(tab_name)
         if tab_name == "error":
@@ -66,7 +65,7 @@ class SteamBot(Bot):
                 #Iterates through the page's games
                 for container in game_containers:
                     game_name = container.find(class_ = "title").get_text()
-                    game_tuple = uf.getGamesInfo(container)
+                    game_tuple = uf.getGameInfo(container)
                     game_dict[game_name] = game_tuple
                     
                     
@@ -83,16 +82,15 @@ class SteamBot(Bot):
                 
                 
                 if "No results were returned for that query." in search_test:
-                    #This page does not contain games
                     break
                     
                 else:
-                    #This page contains games
+
                     game_containers = search_result_container.find_all(class_ = "search_result_row")
                     for container in game_containers:
                             
                         game_name = container.find(class_ = "title").get_text()
-                        game_tuple = uf.getGamesInfo(container)
+                        game_tuple = uf.getGameInfo(container)
                         game_dict[game_name] = game_tuple
                         
                     page_number += 1
@@ -100,7 +98,6 @@ class SteamBot(Bot):
         self._data.append(game_dict)
         
     def printDataInfo(self, upper_bound = 0):
-        #Shouldn't exactly work like this. Rethink this funciton.
         #Prints the dictionary of games and information  
 
         if upper_bound == 0:
