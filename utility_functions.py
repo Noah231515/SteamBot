@@ -4,6 +4,7 @@ Created on Sun Dec  9 10:21:08 2018
 
 @author: afrom
 """
+from neo4j import GraphDatabase
 
 def getFrontPageInfo(item):
         #Inputs a tab_item html class from steam store page
@@ -96,4 +97,36 @@ def getValidName(category_name):
         return "specials"
     
     return "error"
+
+
+def createNodeInfo(tx, game_name, game_bundle_status, game_price, game_discount, game_reviews, game_date, URL):
+    node = tx.run("create (g: Steam_Games {name: $game_name}) "
+                  "set g.game_bundle_status = $game_bundle_status "
+                  "set g.price = $game_price "
+                  "set g.game_discount = $game_discount "
+                  "set g.game_reviews = $game_reviews "
+                  "set g.game_date = $game_date "
+                  "set g.URL = $URL", game_name = game_name, game_bundle_status = game_bundle_status, game_price = game_price, game_discount = game_discount, game_reviews = game_reviews, game_date = game_date, URL = URL)
+    return node
+
+def addDatabaseInfo(uri, username, password, platform, game_dict):
+    #Currently can input information into DB
+    #Does not account for the error raised by constraint
+    #Works
+    driver = GraphDatabase.driver(uri, auth=(username, password))
     
+    with driver.session() as session:
+        for game, game_tuple in game_dict.items():
+            game_name = game
+            game_bundle = game_tuple[0]
+            game_price = game_tuple[1]
+            game_discount = game_tuple[2]
+            game_reviews = game_tuple[3]
+            game_date = game_tuple[4]
+            URL = game_tuple[5]
+            session.write_transaction(createNodeInfo, game_name, game_bundle, game_price, game_discount, game_reviews, game_date, URL)
+            
+    
+
+def updateDatabaseInfo():
+    pass

@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import utility_functions as uf
+from neo4j import GraphDatabase
 #NEed to handle category dict and streamlining names correctly
 
 
@@ -11,6 +12,18 @@ class Bot:
         pass
     
 class SteamBot(Bot):
+    #update database funciton node by node
+    #create database function initially
+    #clear database
+    #bot will take first 5 pages of each category and put in database
+    #need constraint on name, so no duplicates
+    #functions to call to database for data retreival
+    
+    
+    #write some psuedocode for the above
+    
+    
+    
     def __init__(self):
         self._data = list()
         self.category_dict = dict()
@@ -20,7 +33,9 @@ class SteamBot(Bot):
         self.category_dict["specials"] = ("tab_specials_content", "https://store.steampowered.com/search/?specials=1&os=win", "https://store.steampowered.com/search/?os=win&specials=1&page=")
         self.page = requests.get("https://store.steampowered.com/")
         self.soup = BeautifulSoup(self.page.content, "html.parser")
-        
+        self.platform = "Steam_Games"
+    def getBotData(self):
+        return self._data
     def getFrontPageGames(self, tab_name):
         
         info_dict = dict()
@@ -110,3 +125,4 @@ class SteamBot(Bot):
                 dataframe = pd.DataFrame.from_dict(self._data[i])
                 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
                     print(dataframe)
+    
