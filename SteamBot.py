@@ -2,28 +2,47 @@ import requests
 import pandas as pd
 import utility_functions as uf
 from neo4j import GraphDatabase
-#NEed to handle category dict and streamlining names correctly
+#General notes
+
+
+#Implement querying 
+#Query by price, reviews, discount, bundle_status
+#also change bundle status to bool
+#Strings for anay text
 
 
 from bs4 import BeautifulSoup
 
 class Bot:
     def __init__(self):
-        pass
+        
+        self._data = list()
     
+    def printData(self, upper_bound = 0):
+
+        if upper_bound == 0:
+            dataframe = pd.DataFrame.from_dict(self._data[0])
+            with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+                print(dataframe)
+        elif upper_bound <= len(self._data):
+            
+            for i in range(upper_bound):
+                dataframe = pd.DataFrame.from_dict(self._data[i])
+                with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+                    print(dataframe)    
+    
+    def addData(self, game_dict):
+        self._data.append(game_dict)
+    
+    def queryDatabase(self, uri, username, password, price_range = -1, reviews = -1, isdiscounted = -1, isbundle = -1):
+        
+        driver = GraphDatabase.driver(uri, auth=(username, password))
+        with driver.session() as session:
+           query_data = uf.queryInfo(session,price_range,reviews, isdiscounted,isbundle)
+           session.close()
+        self.addData(query_data)
 class SteamBot(Bot):
-    #update database funciton node by node
-    #create database function initially
-    #clear database
-    #bot will take first 5 pages of each category and put in database
-    #need constraint on name, so no duplicates
-    #functions to call to database for data retreival
-    
-    
-    #write some psuedocode for the above
-    
-    
-    
+
     def __init__(self):
         self._data = list()
         self.category_dict = dict()
@@ -33,9 +52,11 @@ class SteamBot(Bot):
         self.category_dict["specials"] = ("tab_specials_content", "https://store.steampowered.com/search/?specials=1&os=win", "https://store.steampowered.com/search/?os=win&specials=1&page=")
         self.page = requests.get("https://store.steampowered.com/")
         self.soup = BeautifulSoup(self.page.content, "html.parser")
-        self.platform = "Steam_Games"
+        
+        
     def getBotData(self):
         return self._data
+    
     def getFrontPageGames(self, tab_name):
         
         info_dict = dict()
@@ -112,17 +133,5 @@ class SteamBot(Bot):
     
         self._data.append(game_dict)
         
-    def printDataInfo(self, upper_bound = 0):
-        #Prints the dictionary of games and information  
 
-        if upper_bound == 0:
-            dataframe = pd.DataFrame.from_dict(self._data[0])
-            with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-                print(dataframe)
-        elif upper_bound <= len(self._data):
-            
-            for i in range(upper_bound):
-                dataframe = pd.DataFrame.from_dict(self._data[i])
-                with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-                    print(dataframe)
     

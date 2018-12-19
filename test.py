@@ -12,11 +12,12 @@ def main():
     uri = "bolt://localhost:7687"
     username = "Noah"
     password = "password" 
-    bot = sb.SteamBot()
-    bot.getGames("sales")
-    games_dict = bot.getBotData()[0]
-    #bot.getGames("sales")
-    uf.addDatabaseInfo(uri, username, password, bot.platform, games_dict)
+    bot = sb.Bot()
+    bot.queryDatabase(uri, username, password, (4.99, 29.99), -1, 1, 1)
+    bot.printData()
+    
+        
+    
 
 if __name__ == "__main__":
     main()
