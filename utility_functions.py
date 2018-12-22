@@ -81,7 +81,7 @@ def getGameInfo(game_container):
             game_price = "$" + game_price_lst[2].strip()
             
     URL = game_container.get("href")
-    if "bundle" or "pack" in URL:
+    if "bundle" in URL or "pack" in URL:
         game_bundle = True
         game_date = no_bundle_date
     else:
@@ -142,7 +142,7 @@ def constructQuery(command_list):
     command_list.pop(0)
     for i, c in enumerate(command_list):
         if i == len(command_list) - 1:
-            query = query + command_list[i] + "return properties(g) LIMIT 20"
+            query = query + command_list[i] + "return properties(g) LIMIT 100"
             return query
         else:
             query = query + command_list[i] + " and "
@@ -154,6 +154,7 @@ def queryInfo(session, price_range, reviews, isdiscounted, isbundle):
     and_cnt = 0
     query_dict = dict()
     command_list = list()
+    #Bundle recognition is a little fucked
     
     
     match = "match(g:Games) "
@@ -190,7 +191,7 @@ def queryInfo(session, price_range, reviews, isdiscounted, isbundle):
     if and_cnt  > 0:
         final_query = constructQuery(command_list)
     elif and_cnt == 0:
-        final_query = match + " where " + command_list[1] + " return properties(g) LIMIT 20"
+        final_query = match + " where " + command_list[1] + " return properties(g) LIMIT 100"
 
        
     data = session.run(final_query, lower_bound = lower_bound, upper_bound = upper_bound , reviews = reviews, isbundle = isbundle)

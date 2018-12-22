@@ -30,6 +30,8 @@ class Bot:
                 dataframe = pd.DataFrame.from_dict(self._data[i])
                 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
                     print(dataframe)    
+    def getBotData(self):
+        return self._data
     
     def addData(self, game_dict):
         self._data.append(game_dict)
@@ -53,9 +55,6 @@ class SteamBot(Bot):
         self.page = requests.get("https://store.steampowered.com/")
         self.soup = BeautifulSoup(self.page.content, "html.parser")
         
-        
-    def getBotData(self):
-        return self._data
     
     def getFrontPageGames(self, tab_name):
         
@@ -94,11 +93,11 @@ class SteamBot(Bot):
         
         while(page_number <= upper_bound):
             if page_number == 1:
-                #Pulls stuff from initial page and creates game containers
+
                 search_result_container = initial_soup.find(id  = "search_result_container")
                 game_containers = search_result_container.find_all(class_ = "search_result_row")
                 
-                #Iterates through the page's games
+
                 for container in game_containers:
                     game_name = container.find(class_ = "title").get_text()
                     game_tuple = uf.getGameInfo(container)
@@ -132,6 +131,74 @@ class SteamBot(Bot):
                     page_number += 1
     
         self._data.append(game_dict)
+        
+class GoGBot(Bot):
+    def __init__(self):
+        self._data = list()
+        self.category_dict = dict()
+        
+        self.category_dict["upcoming"] = ("front page tab here", "https://www.gog.com/games?page=1&sort=popularity&tab=coming", ["https://www.gog.com/games?page=","&sort=popularity&tab=coming"])
+        self.category_dict["onsale"] = ("front page tab here", "https://www.gog.com/games?page=1&sort=popularity&tab=on_sale", ["https://www.gog.com/games?page=","&sort=popularity&tab=on_sale"])
+         
+        self.page = requests.get("https://store.steampowered.com/")
+        self.soup = BeautifulSoup(self.page.content, "html.parser")
+        
+    def getGames(self, game_category, lower_bound = 1, upper_bound = 1):
+        game_dict = dict()
+        initial_page = requests.get(self.category_dict[game_category][1])
+        initial_soup = BeautifulSoup(initial_page.content, "html.parser")
+        nth_page = self.category_dict[game_category][2]
+        
+    
+        page_number = lower_bound
+        
+        while(page_number <= upper_bound):
+            if page_number == 1:
+
+                game_containers = initial_soup.find_all(class_ = "product-tile")
+                
+
+                for container in game_containers:
+                    game_name = container.get("product-tile__title")
+                    print(game_name)
+
+#                    game_tuple = uf.getGameInfo(container)
+#                    game_dict[game_name] = game_tuple
+                    break
+                    
+                    
+                    
+                page_number += 1
+#                
+#            else:
+#                #Check to see if page is valid
+#                #Pulls stuff from nth page
+#                nth_req =  requests.get(nth_page + str(page_number))
+#                nth_soup = BeautifulSoup(nth_req.content, "html.parser")
+#                search_result_container = nth_soup.find(id  = "search_result_container")
+#                search_test = search_result_container.get_text().strip()
+#                
+#                
+#                if "No results were returned for that query." in search_test:
+#                    break
+#                    
+#                else:
+#
+#                    game_containers = search_result_container.find_all(class_ = "search_result_row")
+#                    for container in game_containers:
+#                            
+#                        game_name = container.find(class_ = "title").get_text()
+#                        game_tuple = uf.getGameInfo(container)
+#                        game_dict[game_name] = game_tuple
+#                        
+#                    page_number += 1
+#    
+#        self._data.append(game_dict)
+        
+        
+
+        
+        
         
 
     

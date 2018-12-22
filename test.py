@@ -11,11 +11,9 @@ import utility_functions as uf
 def main():
     uri = "bolt://localhost:7687"
     username = "Noah"
-    password = "password" 
-    bot = sb.Bot()
-    bot.queryDatabase(uri, username, password, (4.99, 29.99), -1, 1, 1)
-    bot.printData()
-    
+    password = "password"
+    bot = sb.GoGBot()
+    bot.getGames("onsale")
         
     
 
